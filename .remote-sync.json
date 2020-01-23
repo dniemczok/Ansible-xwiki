@@ -1,0 +1,18 @@
+{
+  "logger": {
+    "title": "Remote Sync"
+  },
+  "uploadOnSave": true,
+  "useAtomicWrites": true,
+  "deleteLocal": false,
+  "hostname": "lh",
+  "port": "22023",
+  "target": "/home/ansadmin/Ansible-xwiki",
+  "ignore": [
+    ".git/**"
+  ],
+  "username": "ansadmin",
+  "password": "thc401",
+  "watch": [],
+  "transport": "scp"
+}
