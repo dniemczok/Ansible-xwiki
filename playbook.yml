@@ -1,0 +1,85 @@
+-
+  name:                Instalacja Xwiki na Ubuntu
+  hosts:               ansible002
+  remote_user:         root
+  become:              yes
+  tasks:
+
+ ## Instalacja Servera Tomcat 9.0.30
+
+    - name:            Set JAVA_HOME
+      lineinfile:
+        dest:          /etc/environment
+        state:         present
+        regexp:        '^JAVA_HOME'
+        line:          'JAVA_HOME=/usr/lib/jvm/java-13-openjdk-amd64'
+
+    - name:            Repo Oracle Java JDK 8
+      apt_repository:
+        repo:          ppa:webupd8team/java
+        state:         present
+
+    - name:            Installacja wymaganych komponentow
+      apt:
+        update_cache:  yes
+        name:          "{{ item }}"
+        state:         present
+      with_items:
+        - openjdk-13-jdk
+        - htop
+        - screen
+        - nmon
+        - iftop
+
+    - name:            Download Tomcat 9
+      get_url:
+        url:           http://ftp.man.poznan.pl/apache/tomcat/tomcat-9/v9.0.30/bin/apache-tomcat-9.0.30.tar.gz
+        dest:          /opt/tomcat9.tar.gz
+        mode:          '0744'
+
+    - name:            Extract Tomcat 9
+      unarchive:
+        src:           /opt/tomcat9.tar.gz
+        dest:          /opt/
+
+    - name:            Copy /etc/systemd/system/tomcat.service
+      copy:
+        src:           ./Files/tomcat.service
+        dest:          /etc/systemd/system/tomcat.service
+        mode:          0644
+
+
+    - name:            Start and enable Tomcat service
+      systemd:
+        name:          tomcat
+        state:         restarted
+        enabled:       true
+        daemon_reload: true
+      become:          true
+
+## Instalacja Postgresql i Xwiki
+
+    - name:            Update Repozytorium maven.xwiki.org
+      apt_key:
+        url:           https://maven.xwiki.org/public.gpg
+        state:         present
+    - name:            Update Repozytorium xwiki-stable.list
+      get_url:
+        url:           https://maven.xwiki.org/stable/xwiki-stable.list
+        dest:          /etc/apt/sources.list.d/xwiki-stable.list
+    - name:            Run the equivalent of "apt-get update" as a separate step
+      apt:
+        update_cache:  yes
+    - name:            Installacja wymaganych komponentow
+      apt:
+        name:          "{{ item }}"
+        state:         present
+      with_items:
+        - xwiki-pgsql-common
+        - xwiki-tomcat9-pgsql
+
+## Create database grant
+
+    - name:            Create a new database with name "xwiki"
+      postgresql_db:
+        name:          xwiki
