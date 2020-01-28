@@ -30,6 +30,12 @@
         - screen
         - nmon
         - iftop
+        #- libreoffice
+        - unzip
+        - procps
+        - curl
+        - python-psycopg2
+        - libpq-dev
 
     - name:            Download Tomcat 9
       get_url:
@@ -57,6 +63,17 @@
         daemon_reload: true
       become:          true
 
+    - name:            Download Xwiki
+      get_url:
+        url:           https://maven.xwiki.org/releases/org/xwiki/platform/xwiki-platform-distribution-war/12.0-rc-1/xwiki-platform-distribution-war-12.0-rc-1.war
+        dest:          /opt/xwiki.war
+        mode:          '0744'
+
+    - name:            Extract xwiki.war to tomcat ROOT
+      unarchive:
+        src:           /opt/xwiki.war
+        dest:          /opt/apache-tomcat-9.0.30/webapps/ROOT
+
 ## Instalacja Postgresql i Xwiki
 
     - name:            Update Repozytorium maven.xwiki.org
@@ -77,9 +94,52 @@
       with_items:
         - xwiki-pgsql-common
         - xwiki-tomcat9-pgsql
+        - libpostgresql-jdbc-java
+
+    - name:            Copy the JDBC driver in the XWiki webapp
+      copy:
+        src:           /usr/share/java/postgresql-jdbc4.jar
+        dest:          /opt/apache-tomcat-9.0.30/webapps/ROOT/WEB-INF/lib
+        mode:          0644
+
+    - name:            Copy hibernate.cfg.xml
+      copy:
+        src:           ./Files/hibernate.cfg.xml
+        dest:          /opt/apache-tomcat-9.0.30/webapps/ROOT/WEB-INF
+        mode:          0644
+
+
+    - name:            Copy pg_hba.conf
+      copy:
+        src:           ./Files/pg_hba.conf
+        dest:          /etc/postgresql/11/main
+        mode:          0644
+
+    - name:            Restart service postgresql, in all cases
+      service:
+        name:          postgresql
+        state:         restarted
 
 ## Create database grant
 
     - name:            Create a new database with name "xwiki"
+      #become:         yes
+      #become_user:    postgres
       postgresql_db:
         name:          xwiki
+      ignore_errors:   yes
+
+    #- name:           Connect to test database, remove xwiki user
+    #  postgresql_user:
+    #    db:           xwiki
+    #    name:         xwiki
+    #    priv:         ALL
+    #    state:        absent
+
+    - name:            Connect to xwiki database and set user's password with no expire date
+      command:         sudo -u postgres bash -c "psql -c \"CREATE USER xwiki PASSWORD 'xwiki' VALID UNTIL 'infinity';\""
+      ignore_errors:   yes
+
+    - name:            ADD GRANT to xwiki DB
+      command:         sudo -u postgres bash -c "psql -c \"GRANT ALL ON SCHEMA public TO xwiki;\""
+      ignore_errors:   yes
