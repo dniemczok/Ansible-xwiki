@@ -73,7 +73,7 @@
          Thus we recommend not turning on this configuration for HSQLDB unless you know what you're doing :)
 
          Note 2: The same applies to PostGreSQL.
-    -->
+
 
 
     <property name="hibernate.bonecp.idleMaxAgeInMinutes">240</property>
@@ -85,7 +85,7 @@
     <property name="hibernate.bonecp.statementsCacheSize">50</property>
     <property name="hibernate.bonecp.releaseHelperThreads">3</property>
     <property name="hibernate.connection.provider_class">com.xpn.xwiki.store.DBCPConnectionProvider</property>
-
+    -->
 
 
 
@@ -157,7 +157,7 @@
     <mapping resource="instance.hbm.xml"/>
     <mapping resource="notification-filter-preferences.hbm.xml"/>
     <mapping resource="mailsender.hbm.xml"/>
-    -->
+-->
 
     <!-- PostgreSQL configuration.
          Uncomment if you want to use PostgreSQL and comment out other database configurations.
