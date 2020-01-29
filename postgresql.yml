@@ -1,0 +1,29 @@
+-
+  name:              Instalacja Xwiki na Ubuntu
+  hosts:             ansible002
+  remote_user:       root
+  become:            yes
+  tasks:
+
+## Create database grant
+
+    - name:          DROP Database xwiki
+      command:       sudo -u postgres bash -c "psql -c 'DROP DATABASE xwiki;'"
+      ignore_errors: yes
+
+    - name:          DROP OWNED xwiki
+      command:       sudo -u postgres bash -c "psql -c 'DROP OWNED BY xwiki;'"
+      ignore_errors: yes
+
+    - name:          DROP USER xwiki
+      command:       sudo -u postgres bash -c "psql -c 'DROP USER xwiki;'"
+      ignore_errors: yes
+
+    - name:          Create USER xwiki
+      command:       sudo -u postgres bash -c "psql -c \"CREATE USER xwiki WITH PASSWORD 'xwiki';\""
+
+    - name:          Create ROLE xwiki
+      command:       sudo -u postgres bash -c "psql -c \"ALTER USER xwiki PASSWORD 'xwiki';\""
+
+    - name:          Create Database xwiki
+      command:       sudo -u postgres bash -c "psql -c \"CREATE DATABASE xwiki WITH OWNER = xwiki ENCODING = 'UNICODE' TABLESPACE = pg_default;\""

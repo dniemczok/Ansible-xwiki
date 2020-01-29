@@ -75,7 +75,7 @@
          Note 2: The same applies to PostGreSQL.
     -->
 
-    <!-- BoneCP Connection Pooling configuration.
+
     <property name="hibernate.bonecp.idleMaxAgeInMinutes">240</property>
     <property name="hibernate.bonecp.idleConnectionTestPeriodInMinutes">60</property>
     <property name="hibernate.bonecp.partitionCount">3</property>
@@ -85,7 +85,7 @@
     <property name="hibernate.bonecp.statementsCacheSize">50</property>
     <property name="hibernate.bonecp.releaseHelperThreads">3</property>
     <property name="hibernate.connection.provider_class">com.xpn.xwiki.store.DBCPConnectionProvider</property>
-    -->
+
 
 
 
@@ -96,7 +96,7 @@
          If you want the main wiki database to be different than "xwiki" (or the default schema for schema based engines)
          you will also have to set the property xwiki.db in xwiki.cfg file
     -->
-    <!--
+<!--
     <property name="hibernate.connection.url">jdbc:hsqldb:file:${environment.permanentDirectory}/database/xwiki_db;shutdown=true</property>
     <property name="hibernate.connection.username">sa</property>
     <property name="hibernate.connection.password"></property>
@@ -111,7 +111,7 @@
     <mapping resource="instance.hbm.xml"/>
     <mapping resource="notification-filter-preferences.hbm.xml"/>
     <mapping resource="mailsender.hbm.xml"/>
-    -->
+-->
     <!-- MySQL configuration.
          Uncomment if you want to use MySQL and comment out other database configurations.
          Notes:
@@ -266,4 +266,4 @@ Notes:
  -->
 
 </session-factory>
-</hibernate-configuration>     
+</hibernate-configuration>

@@ -1,0 +1,21 @@
+psql -U xwiki
+
+DROP DATABASE xwiki;
+# GRANT ALL PRIVILEGES ON SCHEMA public TO xwiki;
+DROP OWNED BY xwiki;
+DROP USER xwiki;
+
+CREATE DATABASE xwiki
+WITH OWNER = xwiki
+ENCODING = 'UNICODE'
+TABLESPACE = pg_default;
+
+\password xwiki
+OR
+sudo -u postgres psql -c "ALTER USER xwiki PASSWORD 'xwiki';"
+
+\c xwiki
+
+###  CREATE USER xwiki PASSWORD 'xwiki' VALID UNTIL 'infinity';
+
+GRANT ALL ON SCHEMA public TO xwiki;

@@ -122,24 +122,34 @@
 
 ## Create database grant
 
-    - name:            Create a new database with name "xwiki"
-      #become:         yes
-      #become_user:    postgres
-      postgresql_db:
-        name:          xwiki
+    - name:            DROP Database xwiki
+      command:         sudo -u postgres bash -c "psql -c 'DROP DATABASE xwiki;'"
       ignore_errors:   yes
 
-    #- name:           Connect to test database, remove xwiki user
-    #  postgresql_user:
-    #    db:           xwiki
-    #    name:         xwiki
-    #    priv:         ALL
-    #    state:        absent
-
-    - name:            Connect to xwiki database and set user's password with no expire date
-      command:         sudo -u postgres bash -c "psql -c \"CREATE USER xwiki PASSWORD 'xwiki' VALID UNTIL 'infinity';\""
+    - name:            DROP OWNED xwiki
+      command:         sudo -u postgres bash -c "psql -c 'DROP OWNED BY xwiki;'"
       ignore_errors:   yes
 
-    - name:            ADD GRANT to xwiki DB
-      command:         sudo -u postgres bash -c "psql -c \"GRANT ALL ON SCHEMA public TO xwiki;\""
+    - name:            DROP USER xwiki
+      command:         sudo -u postgres bash -c "psql -c 'DROP USER xwiki;'"
       ignore_errors:   yes
+
+    - name:            Create USER xwiki
+      command:         sudo -u postgres bash -c "psql -c \"CREATE USER xwiki WITH PASSWORD 'xwiki';\""
+
+    - name:            Create ROLE xwiki
+      command:         sudo -u postgres bash -c "psql -c \"ALTER USER xwiki PASSWORD 'xwiki';\""
+
+    - name:            Create Database xwiki
+      command:         sudo -u postgres bash -c "psql -c \"CREATE DATABASE xwiki WITH OWNER = xwiki ENCODING = 'UNICODE' TABLESPACE = pg_default;\""
+
+    - name:            Copy pg_hba0.conf
+      copy:
+        src:           ./Files/pg_hba0.conf
+        dest:          /etc/postgresql/11/main/pg_hba.conf
+        mode:          0644
+
+    - name:            Restart service postgresql, in all cases
+      service:
+        name:          postgresql
+        state:         restarted

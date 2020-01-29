@@ -6,7 +6,7 @@
   "useAtomicWrites": true,
   "deleteLocal": false,
   "hostname": "10.222.10.11",
-  "port": "22022",
+  "port": "22024",
   "target": "/home/ansadmin/Ansible-xwiki",
   "ignore": [
     ".remote-sync.json",
