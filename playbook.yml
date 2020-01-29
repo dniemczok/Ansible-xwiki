@@ -17,7 +17,7 @@
     - name:            Repo Oracle Java JDK 8
       apt_repository:
         repo:          ppa:webupd8team/java
-        state:         present
+      ignore_errors:   yes
 
     - name:            Installacja wymaganych komponentow
       apt:

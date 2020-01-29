@@ -5,8 +5,8 @@
   "uploadOnSave": true,
   "useAtomicWrites": true,
   "deleteLocal": false,
-  "hostname": "lh",
-  "port": "22023",
+  "hostname": "10.222.10.11",
+  "port": "22022",
   "target": "/home/ansadmin/Ansible-xwiki",
   "ignore": [
     ".remote-sync.json",
